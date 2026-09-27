@@ -152,7 +152,6 @@ function guardarRPE() {
   localStorage.setItem('registrosRPE', JSON.stringify(registros));
 
   dibujarGrafico(registros);
-  actualizarMapaCorporal(registros);
 }
 
 function dibujarGrafico(registros) {
@@ -227,51 +226,91 @@ function entrenadorIA() {
   caja.innerHTML = `<div class="dia">🤖 <b>Consejo del entrenador:</b><ul>${mensajes.map(m => `<li>${m}</li>`).join('')}</ul></div>`;
 }
 
-// ---------- CAMBIO DE VISTA (frontal / espalda) ----------
-function mostrarVista(vista) {
-  document.getElementById('svg-frontal').style.display = vista === 'frontal' ? 'block' : 'none';
-  document.getElementById('svg-espalda').style.display = vista === 'espalda' ? 'block' : 'none';
-  document.getElementById('btn-frontal').classList.toggle('activo', vista === 'frontal');
-  document.getElementById('btn-espalda').classList.toggle('activo', vista === 'espalda');
+// ---------- NUTRICIÓN ----------
+function calcularCalorias() {
+  const peso = parseFloat(document.getElementById('peso').value);
+  const altura = parseFloat(document.getElementById('altura').value);
+  const edad = parseInt(document.getElementById('edad').value);
+  const sexo = document.getElementById('sexo').value;
+  const actividad = parseFloat(document.getElementById('actividad').value);
+  const objetivo = document.getElementById('objetivo').value;
+
+  let bmr;
+  if (sexo === 'hombre') {
+    bmr = 10 * peso + 6.25 * altura - 5 * edad + 5;
+  } else {
+    bmr = 10 * peso + 6.25 * altura - 5 * edad - 161;
+  }
+  const tdee = bmr * actividad;
+
+  let objetivoCal = tdee;
+  let nota = "Mantenimiento";
+  if (objetivo === 'perdida') { objetivoCal = tdee - 500; nota = "Déficit calórico para pérdida de peso"; }
+  else if (objetivo === 'fuerza') { objetivoCal = tdee + 250; nota = "Ligero superávit para ganancia muscular"; }
+
+  localStorage.setItem('objetivoCalorico', Math.round(objetivoCal));
+
+  document.getElementById('resultadoCalorias').innerHTML = `
+    <div class="dia">
+      <p>Metabolismo basal (BMR, fórmula Mifflin-St Jeor): <b>${Math.round(bmr)} kcal</b></p>
+      <p>Gasto calórico total diario (TDEE): <b>${Math.round(tdee)} kcal</b></p>
+      <p>${nota}: <b>${Math.round(objetivoCal)} kcal/día</b></p>
+    </div>`;
+  actualizarResumenDia();
 }
 
-// ---------- MAPA CORPORAL ----------
-function colorPorNivel(count) {
-  if (count === 0) return '#334155';
-  if (count === 1) return '#0ea5e9';
-  if (count <= 3) return '#0284c7';
-  return '#f97316';
+function anadirCalorias() {
+  const valor = parseInt(document.getElementById('caloriasInput').value);
+  if (!valor) return;
+  const hoy = new Date().toLocaleDateString();
+  let registro = JSON.parse(localStorage.getItem('caloriasHoy')) || { fecha: hoy, total: 0 };
+  if (registro.fecha !== hoy) { registro = { fecha: hoy, total: 0 }; }
+  registro.total += valor;
+  localStorage.setItem('caloriasHoy', JSON.stringify(registro));
+  document.getElementById('caloriasInput').value = '';
+  actualizarResumenDia();
 }
 
-const gruposMusculares = {
-  brazos: ['m-hombro-izq','m-hombro-der','m-biceps-izq','m-biceps-der','m-antebrazo-izq','m-antebrazo-der',
-           'm-hombro-p-izq','m-hombro-p-der','m-triceps-izq','m-triceps-der','m-antebrazo-p-izq','m-antebrazo-p-der'],
-  torso: ['m-pecho-izq','m-pecho-der','m-trapecio','m-dorsal-izq','m-dorsal-der'],
-  core: ['m-abs-sup','m-abs-inf','m-oblicuo-izq','m-oblicuo-der','m-lumbar'],
-  piernas: ['m-cuadriceps-izq','m-cuadriceps-der','m-isquios-izq','m-isquios-der','m-gluteo-izq','m-gluteo-der'],
-  gemelos: ['m-gemelo-f-izq','m-gemelo-f-der','m-gemelo-p-izq','m-gemelo-p-der']
-};
+function actualizarResumenDia() {
+  const hoy = new Date().toLocaleDateString();
+  const registro = JSON.parse(localStorage.getItem('caloriasHoy')) || { fecha: hoy, total: 0 };
+  const objetivo = parseInt(localStorage.getItem('objetivoCalorico')) || null;
 
-function actualizarMapaCorporal(registros) {
-  const hace7dias = Date.now() - 7 * 24 * 60 * 60 * 1000;
-  const recientes = registros.filter(r => (r.ts || 0) >= hace7dias);
-  const conteo = { brazos: 0, torso: 0, core: 0, piernas: 0, gemelos: 0 };
+  let html = `<p>Consumidas hoy: <b>${registro.total} kcal</b></p>`;
+  if (objetivo) {
+    const restante = objetivo - registro.total;
+    html += restante >= 0
+      ? `<p>Objetivo diario: <b>${objetivo} kcal</b> — te quedan <b>${restante} kcal</b></p>`
+      : `<p>Objetivo diario: <b>${objetivo} kcal</b> — has superado el objetivo en <b>${Math.abs(restante)} kcal</b></p>`;
+  } else {
+    html += `<p><small>Calcula antes tus necesidades calóricas para ver tu objetivo diario.</small></p>`;
+  }
+  document.getElementById('resumenDia').innerHTML = html;
+}
 
-  recientes.forEach(r => {
-    if (r.zona === 'completo') {
-      Object.keys(conteo).forEach(z => conteo[z]++);
-    } else if (conteo.hasOwnProperty(r.zona)) {
-      conteo[r.zona]++;
+// ---------- MODAL / OFERTA PRO (simulación, no cobra dinero real) ----------
+function abrirModalPro() {
+  document.getElementById('modalPro').style.display = 'flex';
+}
+
+function cerrarModalPro() {
+  document.getElementById('modalPro').style.display = 'none';
+  setTimeout(() => {
+    if (localStorage.getItem('esPro') !== 'true') {
+      document.getElementById('bannerOferta').style.display = 'flex';
     }
-  });
+  }, 15000);
+}
 
-  Object.keys(gruposMusculares).forEach(zona => {
-    const color = colorPorNivel(conteo[zona]);
-    gruposMusculares[zona].forEach(id => {
-      const el = document.getElementById(id);
-      if (el) el.setAttribute('fill', color);
-    });
-  });
+function cerrarBanner() {
+  document.getElementById('bannerOferta').style.display = 'none';
+}
+
+function comprarPro() {
+  localStorage.setItem('esPro', 'true');
+  document.getElementById('modalPro').style.display = 'none';
+  document.getElementById('bannerOferta').style.display = 'none';
+  alert('✅ ¡Ya eres PRO! (Simulación para el proyecto — no se ha procesado ningún pago real)');
 }
 
 // ---------- AL CARGAR LA PÁGINA ----------
@@ -279,5 +318,12 @@ window.onload = function() {
   calcularZonas();
   const registros = JSON.parse(localStorage.getItem('registrosRPE')) || [];
   if (registros.length) dibujarGrafico(registros);
-  actualizarMapaCorporal(registros);
+  actualizarResumenDia();
+
+  setTimeout(() => {
+    if (localStorage.getItem('esPro') !== 'true' && localStorage.getItem('modalVisto') !== 'true') {
+      abrirModalPro();
+      localStorage.setItem('modalVisto', 'true');
+    }
+  }, 20000);
 };
