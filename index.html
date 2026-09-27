@@ -66,16 +66,29 @@
   </section>
 
   <!-- REGISTRO DIARIO DE ESFUERZO -->
-  <section class="card">
-    <h2>4. Registro de esfuerzo (RPE / Escala de Borg 1-10)</h2>
-    <label>¿Cómo de duro te ha parecido hoy el entrenamiento?
-      <input type="range" id="rpe" min="1" max="10" value="5" oninput="rpeValor.innerText=this.value">
-      <span id="rpeValor">5</span>
-    </label>
-    <button onclick="guardarRPE()">Guardar registro de hoy</button>
-    <p id="avisoLesion" class="aviso"></p>
-    <canvas id="grafico" height="120"></canvas>
-  </section>
+ <section class="card">
+  <h2>4. Registro de esfuerzo (RPE / Escala de Borg 1-10)</h2>
+  <label>¿Cómo de duro te ha parecido hoy el entrenamiento?
+    <input type="range" id="rpe" min="1" max="10" value="5" oninput="rpeValor.innerText=this.value">
+    <span id="rpeValor">5</span>
+  </label>
+
+  <label>¿Qué zona has trabajado hoy?
+    <select id="zonaTrabajada">
+      <option value="brazos">Brazos / Hombros</option>
+      <option value="torso">Pecho / Espalda</option>
+      <option value="core">Core / Abdomen</option>
+      <option value="piernas">Piernas</option>
+      <option value="gemelos">Gemelos</option>
+      <option value="completo">Cuerpo completo (natación/ciclismo largo)</option>
+    </select>
+  </label>
+
+  <button onclick="guardarRPE()">Guardar registro de hoy</button>
+  <p id="avisoLesion" class="aviso"></p>
+  <canvas id="grafico" height="120"></canvas>
+</section>
+ 
   <section class="card">
   <h2>5. Entrenador IA 🤖</h2>
   <p>Analiza tu progreso y te da consejos personalizados</p>
@@ -114,14 +127,3 @@
 <script src="script.js"></script>
 </body>
 </html>
-<label>¿Qué zona has trabajado hoy?
-  <select id="zonaTrabajada">
-    <option value="brazos">Brazos / Hombros</option>
-    <option value="torso">Pecho / Espalda</option>
-    <option value="core">Core / Abdomen</option>
-    <option value="piernas">Piernas</option>
-    <option value="gemelos">Gemelos</option>
-    <option value="completo">Cuerpo completo (natación/ciclismo largo)</option>
-  </select>
-</label>
-<button onclick="guardarRPE()">Guardar registro de hoy</button>
