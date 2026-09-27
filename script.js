@@ -119,3 +119,61 @@ window.onload = function() {
   const registros = JSON.parse(localStorage.getItem('registrosRPE')) || [];
   if (registros.length) dibujarGrafico(registros);
 };
+// ---------- ENTRENADOR IA (sistema experto basado en reglas) ----------
+function entrenadorIA() {
+  const registros = JSON.parse(localStorage.getItem('registrosRPE')) || [];
+  const historialVolumen = JSON.parse(localStorage.getItem('volumenSemanal')) || [];
+  const objetivo = document.getElementById('objetivo').value;
+  const caja = document.getElementById('consejoIA');
+
+  if (registros.length < 3) {
+    caja.innerHTML = `<div class="dia">🤖 Necesito al menos 3 registros de esfuerzo guardados para poder analizarte bien. ¡Sigue registrando tus sesiones en el apartado 4!</div>`;
+    return;
+  }
+
+  const media = registros.reduce((a, b) => a + b.rpe, 0) / registros.length;
+
+  const ultimos = registros.slice(-3).map(r => r.rpe);
+  const anteriores = registros.slice(-6, -3).map(r => r.rpe);
+  let tendencia = "estable";
+  if (anteriores.length) {
+    const mediaUltimos = ultimos.reduce((a, b) => a + b, 0) / ultimos.length;
+    const mediaAnteriores = anteriores.reduce((a, b) => a + b, 0) / anteriores.length;
+    if (mediaUltimos - mediaAnteriores > 1) tendencia = "subiendo";
+    else if (mediaAnteriores - mediaUltimos > 1) tendencia = "bajando";
+  }
+
+  let mensajes = [];
+
+  if (media >= 8) {
+    mensajes.push("Tu esfuerzo medio es muy alto (≥8/10). Cuidado con el sobreentrenamiento: intercala alguna sesión más suave.");
+  } else if (media <= 3) {
+    mensajes.push("Tu esfuerzo medio es bajo (≤3/10). Si tu objetivo lo permite, podrías subir algo la intensidad para seguir progresando.");
+  } else {
+    mensajes.push("Tu esfuerzo medio está en un rango saludable, ni demasiado alto ni demasiado bajo.");
+  }
+
+  if (tendencia === "subiendo") {
+    mensajes.push("Tu esfuerzo percibido está subiendo en las últimas sesiones. Puede ser buena señal de progreso, pero vigila la fatiga acumulada.");
+  } else if (tendencia === "bajando") {
+    mensajes.push("Tu esfuerzo percibido está bajando: puede indicar que te estás adaptando bien (¡mejora de forma!) o que te falta estímulo.");
+  }
+
+  if (historialVolumen.length >= 2) {
+    const anterior = historialVolumen[historialVolumen.length - 2];
+    const actual = historialVolumen[historialVolumen.length - 1];
+    const incremento = ((actual - anterior) / anterior) * 100;
+    if (incremento > 10) {
+      mensajes.push(`Has subido el volumen semanal un ${incremento.toFixed(1)}%, por encima del 10% recomendado. Riesgo de sobrecarga.`);
+    }
+  }
+
+  const consejosObjetivo = {
+    resistencia: "Para resistencia: prioriza sesiones largas en Zona 2 y no descuides el descanso entre series intensas.",
+    fuerza: "Para fuerza: deja al menos 48h de descanso entre sesiones que trabajen el mismo grupo muscular.",
+    perdida: "Para pérdida de peso: combina sesiones continuas moderadas con alguna de alta intensidad (HIIT), y cuida la alimentación."
+  };
+  mensajes.push(consejosObjetivo[objetivo]);
+
+  caja.innerHTML = `<div class="dia">🤖 <b>Consejo del entrenador:</b><ul>${mensajes.map(m => `<li>${m}</li>`).join('')}</ul></div>`;
+}
