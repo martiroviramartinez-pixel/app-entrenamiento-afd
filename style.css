@@ -1,104 +1,269 @@
 * {
   box-sizing: border-box;
-  font-family: 'Segoe UI', sans-serif;
+  font-family: 'Inter', sans-serif;
+  margin: 0;
+}
+
+:root {
+  --azul: #0ea5e9;
+  --azul-oscuro: #0284c7;
+  --violeta: #6366f1;
+  --naranja: #f97316;
+  --fondo: #0b1120;
+  --card: #141b2d;
+  --card-border: #1e293b;
+  --texto: #f1f5f9;
+  --texto-suave: #94a3b8;
 }
 
 body {
-  margin: 0;
-  background: #0f172a;
-  color: #f1f5f9;
+  background: var(--fondo);
+  color: var(--texto);
 }
 
-header {
-  background: linear-gradient(135deg, #0ea5e9, #2563eb);
-  padding: 30px 20px;
+h1, h2, .logo, .cta, .btn-primary {
+  font-family: 'Poppins', sans-serif;
+}
+
+/* ---------- HERO ---------- */
+.hero {
+  position: relative;
+  overflow: hidden;
+  min-height: 92vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   text-align: center;
+  padding: 20px;
+  background: radial-gradient(circle at 50% 20%, #1e293b 0%, #0b1120 70%);
 }
 
-header h1 {
-  margin: 0;
-  font-size: 1.8rem;
+.hero-glow {
+  position: absolute;
+  width: 600px;
+  height: 600px;
+  background: radial-gradient(circle, rgba(14,165,233,0.25) 0%, transparent 70%);
+  top: -200px;
+  left: 50%;
+  transform: translateX(-50%);
+  pointer-events: none;
 }
 
+.hero-content {
+  position: relative;
+  max-width: 600px;
+}
+
+.logo {
+  font-size: 1.3rem;
+  font-weight: 700;
+  letter-spacing: 1px;
+  color: var(--azul);
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-size: 2.6rem;
+  font-weight: 800;
+  background: linear-gradient(90deg, #38bdf8, #818cf8);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  margin-bottom: 18px;
+  line-height: 1.2;
+}
+
+.hero .subtitle {
+  color: var(--texto-suave);
+  font-size: 1.05rem;
+  line-height: 1.6;
+  margin-bottom: 32px;
+}
+
+.cta {
+  background: linear-gradient(90deg, var(--azul), var(--violeta));
+  border: none;
+  color: white;
+  padding: 14px 32px;
+  border-radius: 999px;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(14,165,233,0.35);
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.cta:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 30px rgba(14,165,233,0.45);
+}
+
+/* ---------- MAIN / CARDS ---------- */
 main {
-  max-width: 700px;
-  margin: 20px auto;
-  padding: 0 15px;
+  max-width: 720px;
+  margin: 0 auto;
+  padding: 10px 18px 60px;
 }
 
 .card {
-  background: #1e293b;
-  border-radius: 12px;
-  padding: 20px;
-  margin-bottom: 20px;
-  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+  position: relative;
+  background: var(--card);
+  border: 1px solid var(--card-border);
+  border-radius: 16px;
+  padding: 24px 22px;
+  margin-bottom: 22px;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.25);
+}
+
+.card-badge {
+  position: absolute;
+  top: -14px;
+  left: 22px;
+  background: linear-gradient(90deg, var(--azul), var(--violeta));
+  color: white;
+  font-weight: 700;
+  font-size: 0.85rem;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(14,165,233,0.4);
 }
 
 .card h2 {
-  margin-top: 0;
-  color: #38bdf8;
+  margin-top: 6px;
+  margin-bottom: 14px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.card-desc {
+  color: var(--texto-suave);
+  font-size: 0.9rem;
+  margin-bottom: 14px;
+}
+
+.tag {
+  font-size: 0.7rem;
+  font-weight: 500;
+  color: var(--azul);
+  background: rgba(14,165,233,0.12);
+  padding: 3px 10px;
+  border-radius: 999px;
 }
 
 label {
   display: block;
-  margin: 12px 0;
+  margin: 14px 0;
+  font-size: 0.92rem;
+  color: #cbd5e1;
 }
 
 select, input {
   width: 100%;
-  padding: 8px;
-  margin-top: 5px;
-  border-radius: 6px;
-  border: none;
-  background: #334155;
-  color: white;
-}
-
-button {
-  margin-top: 15px;
-  padding: 10px 20px;
-  border: none;
+  padding: 10px;
+  margin-top: 6px;
   border-radius: 8px;
-  background: #0ea5e9;
+  border: 1px solid var(--card-border);
+  background: #1c2740;
   color: white;
-  font-weight: bold;
-  cursor: pointer;
+  font-size: 0.95rem;
 }
 
-button:hover {
-  background: #0284c7;
+select:focus, input:focus {
+  outline: none;
+  border-color: var(--azul);
+}
+
+.btn-primary {
+  margin-top: 16px;
+  padding: 12px 24px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(90deg, var(--azul), var(--azul-oscuro));
+  color: white;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+  box-shadow: 0 4px 14px rgba(14,165,233,0.3);
+}
+
+.btn-primary:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(14,165,233,0.4);
 }
 
 .dia {
-  background: #334155;
-  padding: 10px;
-  border-radius: 8px;
-  margin-bottom: 8px;
+  background: #1c2740;
+  border: 1px solid var(--card-border);
+  padding: 12px 14px;
+  border-radius: 10px;
+  margin-bottom: 10px;
 }
 
 .aviso {
-  font-weight: bold;
+  font-weight: 600;
   color: #f87171;
+  font-size: 0.88rem;
 }
 
-footer {
-  text-align: center;
-  padding: 20px;
-  color: #64748b;
+/* ---------- MAPA CORPORAL ---------- */
+.vista-toggle {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 14px;
 }
+
+.vista-toggle button {
+  background: #1c2740;
+  border: 1px solid var(--card-border);
+  color: #cbd5e1;
+  padding: 7px 16px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.vista-toggle button.activo {
+  background: var(--azul);
+  color: white;
+  border-color: var(--azul);
+}
+
 .mapa-wrapper {
   display: flex;
   justify-content: center;
-  margin: 15px 0;
+  margin: 10px 0;
 }
 
 .mapa-wrapper svg rect,
-.mapa-wrapper svg circle {
+.mapa-wrapper svg ellipse {
   transition: fill 0.4s ease;
 }
 
 #leyendaMapa {
   text-align: center;
+  font-size: 0.82rem;
+  color: var(--texto-suave);
+}
+
+footer {
+  text-align: center;
+  padding: 30px 20px;
+  color: #475569;
   font-size: 0.85rem;
-  color: #cbd5e1;
+}
+
+@media (max-width: 480px) {
+  .hero h1 { font-size: 2rem; }
 }

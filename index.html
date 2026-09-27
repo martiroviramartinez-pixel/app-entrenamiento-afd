@@ -3,26 +3,37 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Planificador de Entrenamiento — Natación/Ciclismo</title>
+<title>FitPulse — Entrenador Inteligente</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700;800&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 <body>
 
-<header>
-  <h1>🏊‍♂️🚴 Planificador de Entrenamiento</h1>
-  <p>Genera tu plan semanal, controla tu esfuerzo y evita lesiones</p>
+<!-- HERO / PORTADA -->
+<header class="hero">
+  <div class="hero-glow"></div>
+  <div class="hero-content">
+    <div class="logo">⚡ FitPulse</div>
+    <h1>Tu entrenador inteligente</h1>
+    <p class="subtitle">Planifica, analiza y mejora tu rendimiento en natación, ciclismo, running y caminata — con un sistema que aprende de tus propios datos.</p>
+    <button class="cta" onclick="document.getElementById('main-app').scrollIntoView({behavior:'smooth'})">Empezar ahora ↓</button>
+  </div>
 </header>
 
-<main>
+<main id="main-app">
 
   <!-- FORMULARIO DE DATOS -->
   <section class="card">
-    <h2>1. Tus datos</h2>
+    <div class="card-badge">1</div>
+    <h2>Tus datos</h2>
     <label>Deporte:
       <select id="deporte">
-        <option value="natacion">Natación</option>
-        <option value="ciclismo">Ciclismo</option>
+        <option value="natacion">🏊 Natación</option>
+        <option value="ciclismo">🚴 Ciclismo</option>
+        <option value="correr">🏃 Running</option>
+        <option value="caminar">🚶 Caminata</option>
       </select>
     </label>
 
@@ -50,78 +61,124 @@
       <input type="number" id="dias" min="1" max="7" value="3">
     </label>
 
-    <button onclick="generarPlan()">Generar plan</button>
+    <button class="btn-primary" onclick="generarPlan()">Generar plan</button>
   </section>
 
   <!-- ZONAS DE FRECUENCIA CARDIACA -->
   <section class="card">
-    <h2>2. Tus zonas de frecuencia cardíaca</h2>
+    <div class="card-badge">2</div>
+    <h2>Tus zonas de frecuencia cardíaca</h2>
     <div id="zonas"></div>
   </section>
 
   <!-- PLAN GENERADO -->
   <section class="card">
-    <h2>3. Tu plan semanal</h2>
+    <div class="card-badge">3</div>
+    <h2>Tu plan semanal</h2>
+    <div id="ajustePlan"></div>
     <div id="plan"></div>
   </section>
 
   <!-- REGISTRO DIARIO DE ESFUERZO -->
- <section class="card">
-  <h2>4. Registro de esfuerzo (RPE / Escala de Borg 1-10)</h2>
-  <label>¿Cómo de duro te ha parecido hoy el entrenamiento?
-    <input type="range" id="rpe" min="1" max="10" value="5" oninput="rpeValor.innerText=this.value">
-    <span id="rpeValor">5</span>
-  </label>
-
-  <label>¿Qué zona has trabajado hoy?
-    <select id="zonaTrabajada">
-      <option value="brazos">Brazos / Hombros</option>
-      <option value="torso">Pecho / Espalda</option>
-      <option value="core">Core / Abdomen</option>
-      <option value="piernas">Piernas</option>
-      <option value="gemelos">Gemelos</option>
-      <option value="completo">Cuerpo completo (natación/ciclismo largo)</option>
-    </select>
-  </label>
-
-  <button onclick="guardarRPE()">Guardar registro de hoy</button>
-  <p id="avisoLesion" class="aviso"></p>
-  <canvas id="grafico" height="120"></canvas>
-</section>
- 
   <section class="card">
-  <h2>5. Entrenador IA 🤖</h2>
-  <p>Analiza tu progreso y te da consejos personalizados</p>
-  <button onclick="entrenadorIA()">Pedir consejo al entrenador</button>
-  <div id="consejoIA"></div>
-</section
-<section class="card">
-  <h2>6. Mapa corporal — última semana 🧍</h2>
-  <p>Colores según cuánto has trabajado cada zona en los últimos 7 días</p>
-  <div class="mapa-wrapper">
-    <svg viewBox="0 0 200 400" width="200" height="400">
-      <circle cx="100" cy="30" r="25" fill="#475569"/>
-      <rect id="zona-brazos-izq" x="35" y="70" width="25" height="110" rx="12" fill="#334155"/>
-      <rect id="zona-brazos-der" x="140" y="70" width="25" height="110" rx="12" fill="#334155"/>
-      <rect id="zona-torso" x="65" y="60" width="70" height="90" rx="10" fill="#334155"/>
-      <rect id="zona-core-rect" x="70" y="150" width="60" height="50" rx="8" fill="#334155"/>
-      <rect id="zona-piernas-izq" x="72" y="205" width="26" height="100" rx="10" fill="#334155"/>
-      <rect id="zona-piernas-der" x="102" y="205" width="26" height="100" rx="10" fill="#334155"/>
-      <rect id="zona-gemelos-izq" x="74" y="310" width="22" height="70" rx="8" fill="#334155"/>
-      <rect id="zona-gemelos-der" x="104" y="310" width="22" height="70" rx="8" fill="#334155"/>
-    </svg>
-  </div>
-  <div id="leyendaMapa">
-    <span style="color:#334155">⬤</span> Sin trabajar &nbsp;
-    <span style="color:#0ea5e9">⬤</span> Poco &nbsp;
-    <span style="color:#0284c7">⬤</span> Bastante &nbsp;
-    <span style="color:#f97316">⬤</span> Mucho
-  </div>
-</section>
+    <div class="card-badge">4</div>
+    <h2>Registro de esfuerzo <span class="tag">RPE · Escala de Borg 1-10</span></h2>
+    <label>¿Cómo de duro te ha parecido hoy el entrenamiento?
+      <input type="range" id="rpe" min="1" max="10" value="5" oninput="rpeValor.innerText=this.value">
+      <span id="rpeValor">5</span>
+    </label>
+
+    <label>¿Qué zona has trabajado hoy?
+      <select id="zonaTrabajada">
+        <option value="brazos">Brazos / Hombros</option>
+        <option value="torso">Pecho / Espalda</option>
+        <option value="core">Core / Abdomen</option>
+        <option value="piernas">Piernas</option>
+        <option value="gemelos">Gemelos</option>
+        <option value="completo">Cuerpo completo</option>
+      </select>
+    </label>
+
+    <button class="btn-primary" onclick="guardarRPE()">Guardar registro de hoy</button>
+    <p id="avisoLesion" class="aviso"></p>
+    <canvas id="grafico" height="120"></canvas>
+  </section>
+
+  <!-- ENTRENADOR IA -->
+  <section class="card">
+    <div class="card-badge">5</div>
+    <h2>Entrenador IA <span class="tag">🤖</span></h2>
+    <p class="card-desc">Analiza tu progreso y te da consejos personalizados</p>
+    <button class="btn-primary" onclick="entrenadorIA()">Pedir consejo al entrenador</button>
+    <div id="consejoIA"></div>
+  </section>
+
+  <!-- MAPA CORPORAL -->
+  <section class="card">
+    <div class="card-badge">6</div>
+    <h2>Mapa corporal <span class="tag">última semana</span></h2>
+    <p class="card-desc">Colores según cuánto has trabajado cada zona en los últimos 7 días</p>
+
+    <div class="vista-toggle">
+      <button onclick="mostrarVista('frontal')" id="btn-frontal" class="activo">Vista frontal</button>
+      <button onclick="mostrarVista('espalda')" id="btn-espalda">Vista espalda</button>
+    </div>
+
+    <div class="mapa-wrapper">
+      <svg id="svg-frontal" viewBox="0 0 200 400" width="200" height="400">
+        <circle cx="100" cy="25" r="20" fill="#475569"/>
+        <rect x="92" y="42" width="16" height="14" fill="#475569"/>
+        <ellipse id="m-hombro-izq" cx="66" cy="72" rx="17" ry="20" fill="#334155"/>
+        <ellipse id="m-hombro-der" cx="134" cy="72" rx="17" ry="20" fill="#334155"/>
+        <ellipse id="m-pecho-izq" cx="82" cy="92" rx="19" ry="17" fill="#334155"/>
+        <ellipse id="m-pecho-der" cx="118" cy="92" rx="19" ry="17" fill="#334155"/>
+        <ellipse id="m-biceps-izq" cx="55" cy="128" rx="12" ry="26" fill="#334155"/>
+        <ellipse id="m-biceps-der" cx="145" cy="128" rx="12" ry="26" fill="#334155"/>
+        <rect id="m-antebrazo-izq" x="45" y="158" width="20" height="52" rx="10" fill="#334155"/>
+        <rect id="m-antebrazo-der" x="135" y="158" width="20" height="52" rx="10" fill="#334155"/>
+        <rect id="m-oblicuo-izq" x="63" y="112" width="13" height="52" rx="6" fill="#334155"/>
+        <rect id="m-oblicuo-der" x="124" y="112" width="13" height="52" rx="6" fill="#334155"/>
+        <rect id="m-abs-sup" x="79" y="108" width="42" height="32" rx="8" fill="#334155"/>
+        <rect id="m-abs-inf" x="79" y="144" width="42" height="26" rx="8" fill="#334155"/>
+        <rect id="m-cuadriceps-izq" x="71" y="228" width="25" height="82" rx="12" fill="#334155"/>
+        <rect id="m-cuadriceps-der" x="104" y="228" width="25" height="82" rx="12" fill="#334155"/>
+        <rect id="m-gemelo-f-izq" x="73" y="320" width="21" height="52" rx="10" fill="#334155"/>
+        <rect id="m-gemelo-f-der" x="106" y="320" width="21" height="52" rx="10" fill="#334155"/>
+      </svg>
+
+      <svg id="svg-espalda" viewBox="0 0 200 400" width="200" height="400" style="display:none">
+        <circle cx="100" cy="25" r="20" fill="#475569"/>
+        <ellipse id="m-trapecio" cx="100" cy="60" rx="34" ry="20" fill="#334155"/>
+        <ellipse id="m-hombro-p-izq" cx="66" cy="75" rx="17" ry="18" fill="#334155"/>
+        <ellipse id="m-hombro-p-der" cx="134" cy="75" rx="17" ry="18" fill="#334155"/>
+        <ellipse id="m-triceps-izq" cx="55" cy="128" rx="12" ry="26" fill="#334155"/>
+        <ellipse id="m-triceps-der" cx="145" cy="128" rx="12" ry="26" fill="#334155"/>
+        <rect id="m-antebrazo-p-izq" x="45" y="158" width="20" height="52" rx="10" fill="#334155"/>
+        <rect id="m-antebrazo-p-der" x="135" y="158" width="20" height="52" rx="10" fill="#334155"/>
+        <rect id="m-dorsal-izq" x="68" y="98" width="27" height="55" rx="10" fill="#334155"/>
+        <rect id="m-dorsal-der" x="105" y="98" width="27" height="55" rx="10" fill="#334155"/>
+        <rect id="m-lumbar" x="81" y="153" width="38" height="28" rx="10" fill="#334155"/>
+        <ellipse id="m-gluteo-izq" cx="82" cy="205" rx="20" ry="19" fill="#334155"/>
+        <ellipse id="m-gluteo-der" cx="118" cy="205" rx="20" ry="19" fill="#334155"/>
+        <rect id="m-isquios-izq" x="71" y="224" width="25" height="82" rx="12" fill="#334155"/>
+        <rect id="m-isquios-der" x="104" y="224" width="25" height="82" rx="12" fill="#334155"/>
+        <rect id="m-gemelo-p-izq" x="73" y="320" width="21" height="52" rx="10" fill="#334155"/>
+        <rect id="m-gemelo-p-der" x="106" y="320" width="21" height="52" rx="10" fill="#334155"/>
+      </svg>
+    </div>
+
+    <div id="leyendaMapa">
+      <span style="color:#334155">⬤</span> Sin trabajar &nbsp;
+      <span style="color:#0ea5e9">⬤</span> Poco &nbsp;
+      <span style="color:#0284c7">⬤</span> Bastante &nbsp;
+      <span style="color:#f97316">⬤</span> Mucho
+    </div>
+  </section>
+
 </main>
 
 <footer>
-  <p>Proyecto AFD — Hecho con HTML, CSS y JavaScript</p>
+  <p>FitPulse — Proyecto AFD · Hecho con HTML, CSS y JavaScript</p>
 </footer>
 
 <script src="script.js"></script>
