@@ -78,13 +78,16 @@ let grafico;
 
 function guardarRPE() {
   const rpe = parseInt(document.getElementById('rpe').value);
+  const zona = document.getElementById('zonaTrabajada').value;
   const fecha = new Date().toLocaleDateString();
+  const ts = Date.now();
 
   const registros = JSON.parse(localStorage.getItem('registrosRPE')) || [];
-  registros.push({ fecha, rpe });
+  registros.push({ fecha, rpe, zona, ts });
   localStorage.setItem('registrosRPE', JSON.stringify(registros));
 
   dibujarGrafico(registros);
+  actualizarMapaCorporal(registros);
 }
 
 function dibujarGrafico(registros) {
@@ -118,6 +121,7 @@ window.onload = function() {
   calcularZonas();
   const registros = JSON.parse(localStorage.getItem('registrosRPE')) || [];
   if (registros.length) dibujarGrafico(registros);
+  actualizarMapaCorporal(registros);
 };
 // ---------- ENTRENADOR IA (sistema experto basado en reglas) ----------
 function entrenadorIA() {
@@ -176,4 +180,42 @@ function entrenadorIA() {
   mensajes.push(consejosObjetivo[objetivo]);
 
   caja.innerHTML = `<div class="dia">🤖 <b>Consejo del entrenador:</b><ul>${mensajes.map(m => `<li>${m}</li>`).join('')}</ul></div>`;
+}
+// ---------- MAPA CORPORAL ----------
+function colorPorNivel(count) {
+  if (count === 0) return '#334155';
+  if (count === 1) return '#0ea5e9';
+  if (count <= 3) return '#0284c7';
+  return '#f97316';
+}
+
+function actualizarMapaCorporal(registros) {
+  const hace7dias = Date.now() - 7 * 24 * 60 * 60 * 1000;
+  const recientes = registros.filter(r => (r.ts || 0) >= hace7dias);
+
+  const conteo = { brazos: 0, torso: 0, core: 0, piernas: 0, gemelos: 0 };
+
+  recientes.forEach(r => {
+    if (r.zona === 'completo') {
+      conteo.brazos++; conteo.torso++; conteo.core++; conteo.piernas++; conteo.gemelos++;
+    } else if (conteo.hasOwnProperty(r.zona)) {
+      conteo[r.zona]++;
+    }
+  });
+
+  const pares = {
+    brazos: ['zona-brazos-izq', 'zona-brazos-der'],
+    torso: ['zona-torso'],
+    core: ['zona-core-rect'],
+    piernas: ['zona-piernas-izq', 'zona-piernas-der'],
+    gemelos: ['zona-gemelos-izq', 'zona-gemelos-der']
+  };
+
+  Object.keys(pares).forEach(zona => {
+    const color = colorPorNivel(conteo[zona]);
+    pares[zona].forEach(id => {
+      const el = document.getElementById(id);
+      if (el) el.setAttribute('fill', color);
+    });
+  });
 }

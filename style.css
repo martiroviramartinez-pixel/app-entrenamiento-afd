@@ -86,3 +86,19 @@ footer {
   padding: 20px;
   color: #64748b;
 }
+.mapa-wrapper {
+  display: flex;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.mapa-wrapper svg rect,
+.mapa-wrapper svg circle {
+  transition: fill 0.4s ease;
+}
+
+#leyendaMapa {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #cbd5e1;
+}
